@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_delivery_gd/categories.dart';
-import 'package:food_delivery_gd/colors.dart';
-import 'package:food_delivery_gd/restaurants.dart';
+import 'package:food_delivery_gd/models/categories.dart';
+import 'package:food_delivery_gd/models/colors.dart';
+import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/screens/food_details_screen.dart';
 
 class RestaurantViewScreen extends StatefulWidget {
@@ -20,40 +20,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60.sp,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        leading: IconButton.filled(
-          color: Colors.white,
-          style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.chevron_left,
-            color: Colors.black,
-            size: 30.sp,
-          ),
-        ),
-        title: Text(
-          "Restaurant View",
-          style: TextStyle(fontSize: 17.sp),
-        ),
-        actions: [
-          IconButton.filled(
-            color: Colors.white,
-            style:
-                IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-            onPressed: () {},
-            icon: Icon(
-              Icons.more_horiz,
-              color: Colors.black,
-              size: 30.sp,
-            ),
-          ),
-        ],
-      ),
+      appBar: appBar(context),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -354,6 +321,42 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  AppBar appBar(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 60.sp,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      leading: IconButton.filled(
+        color: Colors.white,
+        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.chevron_left,
+          color: Colors.black,
+          size: 30.sp,
+        ),
+      ),
+      title: Text(
+        "Restaurant View",
+        style: TextStyle(fontSize: 17.sp),
+      ),
+      actions: [
+        IconButton.filled(
+          color: Colors.white,
+          style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+          onPressed: () {},
+          icon: Icon(
+            Icons.more_horiz,
+            color: Colors.black,
+            size: 30.sp,
+          ),
+        ),
+      ],
     );
   }
 }

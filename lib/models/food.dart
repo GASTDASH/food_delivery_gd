@@ -1,4 +1,4 @@
-import 'package:food_delivery_gd/categories.dart';
+import 'package:food_delivery_gd/models/categories.dart';
 
 class Food {
   Food({

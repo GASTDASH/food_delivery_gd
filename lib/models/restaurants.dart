@@ -1,5 +1,5 @@
-import 'package:food_delivery_gd/categories.dart';
-import 'package:food_delivery_gd/food.dart';
+import 'package:food_delivery_gd/models/categories.dart';
+import 'package:food_delivery_gd/models/food.dart';
 
 abstract class Restaurants {
   static List list = <Restaurant>[

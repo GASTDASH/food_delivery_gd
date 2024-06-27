@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:food_delivery_gd/categories.dart';
-import 'package:food_delivery_gd/colors.dart';
-import 'package:food_delivery_gd/restaurants.dart';
+import 'package:food_delivery_gd/models/categories.dart';
+import 'package:food_delivery_gd/models/colors.dart';
+import 'package:food_delivery_gd/models/restaurants.dart';
+import 'package:food_delivery_gd/screens/profile_screen.dart';
 import 'package:food_delivery_gd/screens/restaurant_view_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -204,7 +205,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  showOfferDialog();
+                  // showOfferDialog();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileScreen()));
                 },
                 child: Container(
                   height: 45,
@@ -515,20 +520,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.sp),
-          // child: Row(
-          //   children: [
-          //     SvgPicture.asset(
-          //       "assets/svg/icons/search.svg",
-          //       color: const Color(0xFFa0a5ba),
-          //     ),
-          //     SizedBox(width: 8.sp),
-          //     Text(
-          //       "Search dishes, restaurants",
-          //       style:
-          //           TextStyle(fontSize: 14.sp, color: const Color(0xFF676767)),
-          //     )
-          //   ],
-          // ),
           child: Center(
             child: TextField(
               decoration: InputDecoration(

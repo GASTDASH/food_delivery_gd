@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:food_delivery_gd/colors.dart';
+import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/forgot_password_screen.dart';
 import 'package:food_delivery_gd/screens/location_access_screen.dart';
 import 'package:food_delivery_gd/screens/signup_screen.dart';
@@ -107,11 +107,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 29.sp),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const LocationAccessScreen()));
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const LocationAccessScreen()),
+                          (route) => false,
+                        );
                       },
                       child: Container(
                         height: 62.sp,

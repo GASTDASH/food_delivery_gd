@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_delivery_gd/colors.dart';
+import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/home_screen.dart';
 
 class LocationAccessScreen extends StatefulWidget {
@@ -32,10 +32,11 @@ class _LocationAccessScreenState extends State<LocationAccessScreen> {
             SizedBox(height: 93.sp),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false,
+                );
               },
               child: Container(
                 height: 62.sp,

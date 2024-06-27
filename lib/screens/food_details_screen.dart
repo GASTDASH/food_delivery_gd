@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:food_delivery_gd/colors.dart';
-import 'package:food_delivery_gd/restaurants.dart';
+import 'package:food_delivery_gd/models/colors.dart';
+import 'package:food_delivery_gd/models/restaurants.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
   const FoodDetailsScreen(
@@ -21,40 +21,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60.sp,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        leading: IconButton.filled(
-          color: Colors.white,
-          style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.chevron_left,
-            color: Colors.black,
-            size: 30.sp,
-          ),
-        ),
-        title: Text(
-          "Details",
-          style: TextStyle(fontSize: 17.sp),
-        ),
-        actions: [
-          IconButton.filled(
-            color: Colors.white,
-            style:
-                IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-            onPressed: () {},
-            icon: Icon(
-              Icons.more_horiz,
-              color: Colors.black,
-              size: 30.sp,
-            ),
-          ),
-        ],
-      ),
+      appBar: appBar(context),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -393,6 +360,42 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar appBar(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 60.sp,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      leading: IconButton.filled(
+        color: Colors.white,
+        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(
+          Icons.chevron_left,
+          color: Colors.black,
+          size: 30.sp,
+        ),
+      ),
+      title: Text(
+        "Details",
+        style: TextStyle(fontSize: 17.sp),
+      ),
+      actions: [
+        IconButton.filled(
+          color: Colors.white,
+          style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+          onPressed: () {},
+          icon: Icon(
+            Icons.more_horiz,
+            color: Colors.black,
+            size: 30.sp,
+          ),
+        ),
+      ],
     );
   }
 }

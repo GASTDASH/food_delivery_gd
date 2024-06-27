@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_delivery_gd/colors.dart';
+import 'package:food_delivery_gd/models/colors.dart';
 
 class TextBox extends StatefulWidget {
   const TextBox({
