@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_gd/categories.dart';
 import 'package:food_delivery_gd/colors.dart';
 import 'package:food_delivery_gd/restaurants.dart';
+import 'package:food_delivery_gd/screens/food_details_screen.dart';
 
 class RestaurantViewScreen extends StatefulWidget {
   const RestaurantViewScreen({super.key, required this.restaurantId});
@@ -19,6 +21,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 60.sp,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         leading: IconButton.filled(
@@ -164,68 +167,77 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount:
-                    Restaurants.list[widget.restaurantId].foodList.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? 24.sp : 7.sp,
-                    right: index ==
-                            Restaurants
-                                    .list[widget.restaurantId].foodList.length -
-                                1
-                        ? 24.sp
-                        : 2.sp,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedCategoryIndex = index;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: selectedCategoryIndex == index
-                            ? const Color(0xFFf58d1d)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(39.sp),
-                        border: selectedCategoryIndex != index
-                            ? Border.all(
-                                width: 2.sp,
-                                color: const Color(0xFFededed),
-                              )
-                            : const Border(),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.sp),
+                    Restaurants.list[widget.restaurantId].categories.length,
+                itemBuilder: (context, index) {
+                  List<String> categoriesNames = [];
+                  for (Category category
+                      in Restaurants.list[widget.restaurantId].categories) {
+                    categoriesNames.add(category.name);
+                  }
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      left: index == 0 ? 24.sp : 7.sp,
+                      right: index ==
+                              Restaurants.list[widget.restaurantId].categories
+                                      .length -
+                                  1
+                          ? 24.sp
+                          : 2.sp,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedCategoryIndex = index;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: selectedCategoryIndex == index
+                              ? const Color(0xFFf58d1d)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(39.sp),
+                          border: selectedCategoryIndex != index
+                              ? Border.all(
+                                  width: 2.sp,
+                                  color: const Color(0xFFededed),
+                                )
+                              : const Border(),
+                        ),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.sp),
-                          child: Row(
-                            children: [
-                              Text(
-                                Restaurants
-                                    .list[widget.restaurantId].foodList[index],
-                                style: TextStyle(
-                                    fontSize: 16.sp,
-                                    color: selectedCategoryIndex == index
-                                        ? Colors.white
-                                        : Colors.black),
-                              ),
-                            ],
+                          padding: EdgeInsets.symmetric(horizontal: 8.sp),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                            child: Row(
+                              children: [
+                                Text(
+                                  categoriesNames[index],
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: selectedCategoryIndex == index
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
             SizedBox(height: 32.sp),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.sp),
+              padding:
+                  EdgeInsets.only(left: 24.sp, right: 24.sp, bottom: 30.sp),
               child: GridView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 10,
+                itemCount:
+                    Restaurants.list[widget.restaurantId].foodList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisExtent: 165.sp,
@@ -233,7 +245,15 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                   mainAxisSpacing: 20.sp,
                 ),
                 itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FoodDetailsScreen(
+                                  restaurantId: widget.restaurantId,
+                                  foodId: index,
+                                )));
+                  },
                   child: Stack(
                     children: [
                       Container(
@@ -255,17 +275,47 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Burger",
+                                Restaurants.list[widget.restaurantId]
+                                    .foodList[index].name,
                                 style: TextStyle(
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 5.sp),
+                              SizedBox(height: 3.sp),
                               Text(
-                                "Figna kakaya-to",
+                                // Restaurants.list[widget.restaurantId].foodList[index].description
+                                null ?? "No description",
                                 style: TextStyle(
                                     fontSize: 13.sp,
                                     color: const Color(0xFF646982)),
+                              ),
+                              SizedBox(height: 2.sp),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "\$${(Restaurants.list[widget.restaurantId].foodList[index].price as double).truncate()}",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 30.sp,
+                                    width: 30.sp,
+                                    child: IconButton.filled(
+                                      padding: EdgeInsets.zero,
+                                      style: IconButton.styleFrom(
+                                          backgroundColor: ColorsMy.primary),
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.add_rounded,
+                                        size: 25,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -274,12 +324,23 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                       Center(
                         child: Column(
                           children: [
-                            Container(
-                              height: 79.sp,
-                              width: 114.sp,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF98a8b8),
-                                borderRadius: BorderRadius.circular(15.sp),
+                            Hero(
+                              tag: "foodImg$index",
+                              child: Container(
+                                height: 79.sp,
+                                width: 114.sp,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF98a8b8),
+                                  borderRadius: BorderRadius.circular(15.sp),
+                                  image: DecorationImage(
+                                    image: AssetImage(Restaurants
+                                            .list[widget.restaurantId]
+                                            .foodList[index]
+                                            .imgAsset ??
+                                        "assets/img/no_food.jpg"),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
                             ),
                           ],

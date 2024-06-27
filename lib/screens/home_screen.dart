@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/categories.dart';
 import 'package:food_delivery_gd/colors.dart';
 import 'package:food_delivery_gd/restaurants.dart';
@@ -78,107 +79,114 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.vertical,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: Restaurants.list.length,
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              RestaurantViewScreen(restaurantId: index)));
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 28.sp),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Hero(
-                        tag: "restImg$index",
-                        child: Container(
-                          height: 137.sp,
-                          width: 327.sp,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFF98a8b8),
-                              borderRadius: BorderRadius.circular(10.sp),
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    Restaurants.list[index].imgAsset),
-                                fit: BoxFit.cover,
-                              )),
+              itemBuilder: (context, index) {
+                List<String> categoriesNames = [];
+                for (Category category in Restaurants.list[index].categories) {
+                  categoriesNames.add(category.name);
+                }
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                RestaurantViewScreen(restaurantId: index)));
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 28.sp),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Hero(
+                          tag: "restImg$index",
+                          child: Container(
+                            height: 137.sp,
+                            width: 327.sp,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFF98a8b8),
+                                borderRadius: BorderRadius.circular(10.sp),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      Restaurants.list[index].imgAsset),
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.sp),
-                      Text(
-                        Restaurants.list[index].name,
-                        style: TextStyle(fontSize: 20.sp),
-                      ),
-                      SizedBox(height: 5.sp),
-                      Text(
-                        Restaurants.list[index].foodList.join(" - "),
-                        style: TextStyle(
-                            color: const Color(0xFFa0a5ba), fontSize: 14.sp),
-                      ),
-                      SizedBox(height: 12.sp),
-                      Row(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.star_border_outlined,
-                                color: ColorsMy.primary,
-                                size: 30,
-                              ),
-                              SizedBox(width: 4.sp),
-                              Text(
-                                Restaurants.list[index].rating.toString(),
-                                style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          SizedBox(width: 24.sp),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.delivery_dining_outlined,
-                                color: ColorsMy.primary,
-                                size: 30,
-                              ),
-                              SizedBox(width: 4.sp),
-                              Text(
-                                Restaurants.list[index].deliveryPrice == 0.0
-                                    ? "Free"
-                                    : Restaurants.list[index].deliveryPrice
-                                        .toString(),
-                                style: TextStyle(fontSize: 14.sp),
-                              )
-                            ],
-                          ),
-                          SizedBox(width: 24.sp),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.access_time_rounded,
-                                color: ColorsMy.primary,
-                                size: 30,
-                              ),
-                              SizedBox(width: 4.sp),
-                              Text(
-                                "${Restaurants.list[index].deliveryTime} min",
-                                style: TextStyle(fontSize: 14.sp),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                        SizedBox(height: 8.sp),
+                        Text(
+                          Restaurants.list[index].name,
+                          style: TextStyle(fontSize: 20.sp),
+                        ),
+                        SizedBox(height: 5.sp),
+                        Text(
+                          categoriesNames.join(" - "),
+                          style: TextStyle(
+                              color: const Color(0xFFa0a5ba), fontSize: 14.sp),
+                        ),
+                        SizedBox(height: 12.sp),
+                        Row(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.star_border_outlined,
+                                  color: ColorsMy.primary,
+                                  size: 30,
+                                ),
+                                SizedBox(width: 4.sp),
+                                Text(
+                                  Restaurants.list[index].rating.toString(),
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            SizedBox(width: 24.sp),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.delivery_dining_outlined,
+                                  color: ColorsMy.primary,
+                                  size: 30,
+                                ),
+                                SizedBox(width: 4.sp),
+                                Text(
+                                  Restaurants.list[index].deliveryPrice == 0.0
+                                      ? "Free"
+                                      : Restaurants.list[index].deliveryPrice
+                                          .toString(),
+                                  style: TextStyle(fontSize: 14.sp),
+                                )
+                              ],
+                            ),
+                            SizedBox(width: 24.sp),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.access_time_rounded,
+                                  color: ColorsMy.primary,
+                                  size: 30,
+                                ),
+                                SizedBox(width: 4.sp),
+                                Text(
+                                  "${Restaurants.list[index].deliveryTime} min",
+                                  style: TextStyle(fontSize: 14.sp),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         )
@@ -205,9 +213,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: BoxShape.circle,
                     color: Color(0xFFecf0f4),
                   ),
-                  child: const Icon(
-                    Icons.list_rounded,
-                    size: 30,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.sp),
+                    child: SvgPicture.asset(
+                      "assets/svg/icons/menu.svg",
+                    ),
                   ),
                 ),
               ),
@@ -255,9 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: IconButton.filled(
                 onPressed: () {},
-                icon: const Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 30,
+                icon: Padding(
+                  padding: EdgeInsets.all(4.sp),
+                  child: SvgPicture.asset("assets/svg/icons/shopping-bag.svg"),
                 ),
                 style: IconButton.styleFrom(backgroundColor: Colors.black),
               ),
@@ -505,20 +515,34 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.sp),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.search_rounded,
-                size: 30,
-                color: Color(0xFFA0A5BA),
-              ),
-              SizedBox(width: 6.sp),
-              Text(
-                "Search dishes, restaurants",
-                style:
-                    TextStyle(fontSize: 14.sp, color: const Color(0xFF676767)),
-              )
-            ],
+          // child: Row(
+          //   children: [
+          //     SvgPicture.asset(
+          //       "assets/svg/icons/search.svg",
+          //       color: const Color(0xFFa0a5ba),
+          //     ),
+          //     SizedBox(width: 8.sp),
+          //     Text(
+          //       "Search dishes, restaurants",
+          //       style:
+          //           TextStyle(fontSize: 14.sp, color: const Color(0xFF676767)),
+          //     )
+          //   ],
+          // ),
+          child: Center(
+            child: TextField(
+              decoration: InputDecoration(
+                  icon: SvgPicture.asset(
+                    "assets/svg/icons/search.svg",
+                    color: const Color(0xFFa0a5ba),
+                  ),
+                  hintText: "Search dishes, restaurants",
+                  hintStyle: TextStyle(
+                    fontSize: 14.sp,
+                    color: ColorsMy.gray1,
+                  ),
+                  border: InputBorder.none),
+            ),
           ),
         ),
       ),
