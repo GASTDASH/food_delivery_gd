@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
+import 'package:food_delivery_gd/screens/cart_screen.dart';
 import 'package:food_delivery_gd/screens/profile_screen.dart';
 import 'package:food_delivery_gd/screens/restaurant_view_screen.dart';
 
@@ -269,7 +270,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
               ),
               child: IconButton.filled(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CartScreen()));
+                },
                 icon: Padding(
                   padding: EdgeInsets.all(4.sp),
                   child: SvgPicture.asset("assets/svg/icons/shopping-bag.svg"),

@@ -5,7 +5,7 @@ import 'package:food_delivery_gd/models/colors.dart';
 class TextBox extends StatefulWidget {
   const TextBox({
     super.key,
-    required this.titleText,
+    this.titleText,
     required this.hintText,
     this.password = false,
     this.text = "",
@@ -13,7 +13,7 @@ class TextBox extends StatefulWidget {
     this.height,
   });
 
-  final String titleText;
+  final String? titleText;
   final String hintText;
   final bool password;
   final String text;
@@ -39,10 +39,12 @@ class _TextBoxState extends State<TextBox> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.titleText,
-          style: TextStyle(fontSize: 13.sp),
-        ),
+        widget.titleText != null
+            ? Text(
+                widget.titleText!,
+                style: TextStyle(fontSize: 13.sp),
+              )
+            : const SizedBox.shrink(),
         SizedBox(height: 8.sp),
         Container(
           height: widget.height ?? 62.sp,
