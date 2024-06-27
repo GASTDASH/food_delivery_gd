@@ -8,17 +8,31 @@ class TextBox extends StatefulWidget {
     required this.titleText,
     required this.hintText,
     this.password = false,
+    this.text = "",
+    this.controller,
+    this.height,
   });
 
   final String titleText;
   final String hintText;
   final bool password;
+  final String text;
+  final TextEditingController? controller;
+  final double? height;
 
   @override
   State<TextBox> createState() => _TextBoxState();
 }
 
 class _TextBoxState extends State<TextBox> {
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.controller ?? TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +45,7 @@ class _TextBoxState extends State<TextBox> {
         ),
         SizedBox(height: 8.sp),
         Container(
-          height: 62.sp,
+          height: widget.height ?? 62.sp,
           width: 327.sp,
           decoration: BoxDecoration(
             color: const Color(0xFFf0f5fa),
@@ -45,6 +59,7 @@ class _TextBoxState extends State<TextBox> {
                 children: [
                   Flexible(
                     child: TextField(
+                      controller: controller,
                       decoration: InputDecoration(
                           hintText: widget.hintText,
                           hintStyle: TextStyle(
