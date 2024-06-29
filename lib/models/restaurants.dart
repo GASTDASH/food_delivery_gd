@@ -1,5 +1,6 @@
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/food.dart';
+import 'package:food_delivery_gd/models/ingredients.dart';
 
 abstract class Restaurants {
   static List list = <Restaurant>[
@@ -21,7 +22,10 @@ abstract class Restaurants {
           name: "Burger Ferguson",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt", "Chicken"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+            ingredients.firstWhere((i) => i.name == "Chicken"),
+          ],
           price: 32,
           imgAsset: "assets/img/burger2.jpg",
         ),
@@ -29,7 +33,10 @@ abstract class Restaurants {
           name: "Burger Bistro",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt", "Chicken"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+            ingredients.firstWhere((i) => i.name == "Chicken"),
+          ],
           price: 40,
           imgAsset: "assets/img/burger3.jpg",
         ),
@@ -37,7 +44,9 @@ abstract class Restaurants {
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+          ],
           price: 20,
           imgAsset: "assets/img/burger1.jpg",
         ),
@@ -60,7 +69,9 @@ abstract class Restaurants {
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+          ],
           price: 20,
         ),
       ],
@@ -69,7 +80,7 @@ abstract class Restaurants {
       name: "The Culinary Canvas",
       imgAsset: "assets/img/rest3.jpg",
       categories: [
-        Categories.list.firstWhere((category) => category.name == "Riche"),
+        Categories.list.firstWhere((category) => category.name == "Rice"),
         Categories.list.firstWhere((category) => category.name == "Sandwich"),
       ],
       rating: 4.4,
@@ -81,7 +92,9 @@ abstract class Restaurants {
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+          ],
           price: 20,
         ),
       ],
@@ -102,7 +115,9 @@ abstract class Restaurants {
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
-          ingredients: ["Salt"],
+          ingredients: [
+            ingredients.firstWhere((i) => i.name == "Salt"),
+          ],
           price: 20,
         ),
       ],

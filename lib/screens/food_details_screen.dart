@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
   const FoodDetailsScreen(
-      {super.key, required this.restaurantId, required this.foodId});
+      {super.key,
+      required this.restaurantId,
+      required this.foodId,
+      required this.cartBadgeUpdateCallback});
 
   final int restaurantId;
   final int foodId;
+  final Function cartBadgeUpdateCallback;
 
   @override
   State<FoodDetailsScreen> createState() => _FoodDetailsScreenState();
@@ -177,39 +182,50 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               ),
             ),
             SizedBox(height: 26.sp),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.sp),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("SIZE:", style: TextStyle(fontSize: 13.sp)),
-                  SizedBox(width: 16.sp),
-                  Row(
+            Restaurants.list[widget.restaurantId].foodList[widget.foodId]
+                        .sizes !=
+                    null
+                ? Column(
                     children: [
-                      CircleAvatar(
-                        radius: 24.sp,
-                        backgroundColor: const Color(0xFFf0f5fa),
-                        child: Text("10''", style: TextStyle(fontSize: 16.sp)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.sp),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("SIZE:", style: TextStyle(fontSize: 13.sp)),
+                            SizedBox(width: 16.sp),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 24.sp,
+                                  backgroundColor: const Color(0xFFf0f5fa),
+                                  child: Text("10''",
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ),
+                                SizedBox(width: 10.sp),
+                                CircleAvatar(
+                                  radius: 24.sp,
+                                  backgroundColor: const Color(0xFFf0f5fa),
+                                  child: Text("14''",
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ),
+                                SizedBox(width: 10.sp),
+                                CircleAvatar(
+                                  radius: 24.sp,
+                                  backgroundColor: const Color(0xFFf0f5fa),
+                                  child: Text("16''",
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ),
+                                SizedBox(width: 10.sp),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(width: 10.sp),
-                      CircleAvatar(
-                        radius: 24.sp,
-                        backgroundColor: const Color(0xFFf0f5fa),
-                        child: Text("14''", style: TextStyle(fontSize: 16.sp)),
-                      ),
-                      SizedBox(width: 10.sp),
-                      CircleAvatar(
-                        radius: 24.sp,
-                        backgroundColor: const Color(0xFFf0f5fa),
-                        child: Text("16''", style: TextStyle(fontSize: 16.sp)),
-                      ),
-                      SizedBox(width: 10.sp),
+                      SizedBox(height: 20.sp),
                     ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.sp),
+                  )
+                : const SizedBox.shrink(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.sp),
               child: Column(
@@ -226,7 +242,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                       mainAxisSpacing: 20.sp,
                     ),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 8,
+                    itemCount: Restaurants.list[widget.restaurantId]
+                        .foodList[widget.foodId].ingredients.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Column(
@@ -235,13 +252,21 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             radius: 25.sp,
                             backgroundColor: const Color(0xFFffebe4),
                             child: SvgPicture.asset(
-                              "assets/svg/icons/salt.svg",
-                              height: 24.sp,
+                              Restaurants
+                                  .list[widget.restaurantId]
+                                  .foodList[widget.foodId]
+                                  .ingredients[index]
+                                  .iconAsset,
+                              height: 25.sp,
                             ),
                           ),
                           SizedBox(height: 5.sp),
                           Text(
-                            "Salt",
+                            Restaurants
+                                .list[widget.restaurantId]
+                                .foodList[widget.foodId]
+                                .ingredients[index]
+                                .name,
                             style: TextStyle(
                                 color: const Color(0xFF747783),
                                 fontSize: 12.sp,
@@ -250,7 +275,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                         ],
                       );
                     },
-                  )
+                  ),
+                  SizedBox(height: 10.sp),
                 ],
               ),
             ),
@@ -276,7 +302,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "\$${((Restaurants.list[widget.restaurantId].foodList[widget.restaurantId].price) as double).truncate()}",
+                    "\$${((Restaurants.list[widget.restaurantId].foodList[widget.foodId].price) as double).truncate()}",
                     style: TextStyle(fontSize: 28.sp),
                   ),
                   Container(
@@ -338,20 +364,32 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ],
               ),
               SizedBox(height: 24.sp),
-              Container(
-                height: 62.sp,
-                width: 327.sp,
-                decoration: BoxDecoration(
-                  color: ColorsMy.primary,
-                  borderRadius: BorderRadius.circular(12.sp),
-                ),
-                child: Center(
-                  child: Text(
-                    "ADD TO CART",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () {
+                  cart.add(
+                    CartItem(
+                        food: Restaurants
+                            .list[widget.restaurantId].foodList[widget.foodId],
+                        count: foodCount),
+                  );
+                  widget.cartBadgeUpdateCallback();
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 62.sp,
+                  width: 327.sp,
+                  decoration: BoxDecoration(
+                    color: ColorsMy.primary,
+                    borderRadius: BorderRadius.circular(12.sp),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "ADD TO CART",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

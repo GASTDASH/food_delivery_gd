@@ -1,4 +1,5 @@
 import 'package:food_delivery_gd/models/categories.dart';
+import 'package:food_delivery_gd/models/ingredients.dart';
 
 class Food {
   Food({
@@ -14,7 +15,7 @@ class Food {
   final String name;
   final String? description;
   final Category category;
-  final List<String> ingredients;
+  final List<Ingredient> ingredients;
   final List<String>? sizes;
   final double price;
   final String? imgAsset;

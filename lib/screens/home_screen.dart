@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
@@ -17,6 +18,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedCategoryIndex = 0;
+
+  void cartBadgeUpdateCallback() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                RestaurantViewScreen(restaurantId: index)));
+                            builder: (context) => RestaurantViewScreen(
+                                  restaurantId: index,
+                                  cartBadgeUpdateCallback:
+                                      cartBadgeUpdateCallback,
+                                )));
                   },
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 28.sp),
@@ -266,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: ColorsMy.primary,
               offset: const Offset(-2, 0),
               label: Text(
-                "2",
+                cart.length.toString(),
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
               ),
               child: IconButton.filled(
@@ -274,7 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CartScreen()));
+                          builder: (context) => CartScreen(
+                                cartBadgeUpdateCallback:
+                                    cartBadgeUpdateCallback,
+                              )));
                 },
                 icon: Padding(
                   padding: EdgeInsets.all(4.sp),

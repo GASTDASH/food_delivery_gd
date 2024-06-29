@@ -5,6 +5,7 @@ class Account {
     required this.fullname,
     this.avatarAsset,
     required this.phone,
+    this.addresses,
   });
 
   final String email;
@@ -12,6 +13,7 @@ class Account {
   final String fullname;
   final String? avatarAsset;
   final String phone;
+  final List<String>? addresses;
 }
 
 Account myAccount = Account(

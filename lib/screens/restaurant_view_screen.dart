@@ -6,9 +6,13 @@ import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/screens/food_details_screen.dart';
 
 class RestaurantViewScreen extends StatefulWidget {
-  const RestaurantViewScreen({super.key, required this.restaurantId});
+  const RestaurantViewScreen(
+      {super.key,
+      required this.restaurantId,
+      required this.cartBadgeUpdateCallback});
 
   final int restaurantId;
+  final Function cartBadgeUpdateCallback;
 
   @override
   State<RestaurantViewScreen> createState() => _RestaurantViewScreenState();
@@ -217,9 +221,10 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => FoodDetailsScreen(
-                                  restaurantId: widget.restaurantId,
-                                  foodId: index,
-                                )));
+                                restaurantId: widget.restaurantId,
+                                foodId: index,
+                                cartBadgeUpdateCallback:
+                                    widget.cartBadgeUpdateCallback)));
                   },
                   child: Stack(
                     children: [
