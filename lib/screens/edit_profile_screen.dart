@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/account.dart';
 import 'package:food_delivery_gd/models/colors.dart';
-import 'package:food_delivery_gd/widgets/text_box.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -98,7 +98,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
-              )
+              ),
+              SizedBox(height: 30.sp),
             ],
           ),
         ),
@@ -106,27 +107,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: Colors.white,
+    //   surfaceTintColor: Colors.white,
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.black,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Edit Profile",
+    //     style: TextStyle(fontSize: 17.sp),
+    //   ),
+    // );
+    return CustomAppBar(
+      title: "Edit Profile",
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.black,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Edit Profile",
-        style: TextStyle(fontSize: 17.sp),
-      ),
+      buttonBackgroundColor: const Color(0xFFecf0f4),
     );
   }
 }

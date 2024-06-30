@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/account.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/edit_profile_screen.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
@@ -102,6 +103,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
             iconAsset,
+            // ignore: deprecated_member_use
             color: iconColor,
             width: 18.sp,
           ),
@@ -120,38 +122,62 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: Colors.white,
+    //   surfaceTintColor: Colors.white,
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.black,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Profile",
+    //     style: TextStyle(fontSize: 17.sp),
+    //   ),
+    //   actions: [
+    //     // IconButton.filled(
+    //     //   color: Colors.white,
+    //     //   style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     //   onPressed: () {},
+    //     //   icon: Icon(
+    //     //     Icons.more_horiz,
+    //     //     color: Colors.black,
+    //     //     size: 30.sp,
+    //     //   ),
+    //     // ),
+    //     GestureDetector(
+    //       onTap: () {
+    //         Navigator.push(
+    //             context,
+    //             MaterialPageRoute(
+    //                 builder: (context) => const EditProfileScreen()));
+    //       },
+    //       child: Text(
+    //         "EDIT",
+    //         style: TextStyle(
+    //           color: ColorsMy.primary,
+    //           fontSize: 14.sp,
+    //           decoration: TextDecoration.underline,
+    //           decorationColor: ColorsMy.primary,
+    //         ),
+    //       ),
+    //     )
+    //   ],
+    // );
+    return CustomAppBar(
+      title: "Personal Info",
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.black,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Profile",
-        style: TextStyle(fontSize: 17.sp),
-      ),
+      buttonBackgroundColor: const Color(0xFFecf0f4),
       actions: [
-        // IconButton.filled(
-        //   color: Colors.white,
-        //   style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        //   onPressed: () {},
-        //   icon: Icon(
-        //     Icons.more_horiz,
-        //     color: Colors.black,
-        //     size: 30.sp,
-        //   ),
-        // ),
         GestureDetector(
           onTap: () {
             Navigator.push(

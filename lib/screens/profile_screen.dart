@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/account.dart';
 import 'package:food_delivery_gd/screens/personal_info_screen.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -198,6 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.white,
                 child: SvgPicture.asset(
                   iconAsset,
+                  // ignore: deprecated_member_use
                   color: iconColor,
                   width: 18.sp,
                 ),
@@ -215,27 +217,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: Colors.white,
+    //   surfaceTintColor: Colors.white,
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.black,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Profile",
+    //     style: TextStyle(fontSize: 17.sp),
+    //   ),
+    //   actions: [
+    //     IconButton.filled(
+    //       color: Colors.white,
+    //       style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //       onPressed: () {},
+    //       icon: Icon(
+    //         Icons.more_horiz,
+    //         color: Colors.black,
+    //         size: 30.sp,
+    //       ),
+    //     ),
+    //   ],
+    // );
+    return CustomAppBar(
+      title: "Profile",
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.black,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Profile",
-        style: TextStyle(fontSize: 17.sp),
-      ),
+      buttonBackgroundColor: const Color(0xFFecf0f4),
       actions: [
         IconButton.filled(
           color: Colors.white,

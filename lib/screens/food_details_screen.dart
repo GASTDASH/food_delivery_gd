@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
   const FoodDetailsScreen(
@@ -62,6 +63,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             backgroundColor: Colors.white54,
                             child: SvgPicture.asset(
                               "assets/svg/icons/heart.svg",
+                              // ignore: deprecated_member_use
                               color: Colors.white,
                               height: 18.sp,
                             ),
@@ -328,6 +330,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                               radius: 12.sp,
                               child: SvgPicture.asset(
                                 "assets/svg/icons/minus.svg",
+                                // ignore: deprecated_member_use
                                 color: Colors.white,
                                 width: 15.sp,
                               ),
@@ -352,6 +355,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                               radius: 12.sp,
                               child: SvgPicture.asset(
                                 "assets/svg/icons/plus.svg",
+                                // ignore: deprecated_member_use
                                 color: Colors.white,
                                 width: 15.sp,
                               ),
@@ -366,7 +370,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               SizedBox(height: 24.sp),
               GestureDetector(
                 onTap: () {
-                  cart.add(
+                  cart.addItem(
                     CartItem(
                         food: Restaurants
                             .list[widget.restaurantId].foodList[widget.foodId],
@@ -401,39 +405,44 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: Colors.white,
+    //   surfaceTintColor: Colors.white,
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.black,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Details",
+    //     style: TextStyle(fontSize: 17.sp),
+    //   ),
+    //   actions: [
+    //     IconButton.filled(
+    //       color: Colors.white,
+    //       style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //       onPressed: () {},
+    //       icon: Icon(
+    //         Icons.more_horiz,
+    //         color: Colors.black,
+    //         size: 30.sp,
+    //       ),
+    //     ),
+    //   ],
+    // );
+    return CustomAppBar(
+      title: "Details",
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.black,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Details",
-        style: TextStyle(fontSize: 17.sp),
-      ),
-      actions: [
-        IconButton.filled(
-          color: Colors.white,
-          style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-          onPressed: () {},
-          icon: Icon(
-            Icons.more_horiz,
-            color: Colors.black,
-            size: 30.sp,
-          ),
-        ),
-      ],
+      buttonBackgroundColor: const Color(0xFFecf0f4),
     );
   }
 }

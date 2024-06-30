@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
-import 'package:food_delivery_gd/screens/food_details_screen.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
+
+import 'food_widget.dart';
 
 class RestaurantViewScreen extends StatefulWidget {
   const RestaurantViewScreen(
@@ -215,112 +217,13 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                   crossAxisSpacing: 20.sp,
                   mainAxisSpacing: 20.sp,
                 ),
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FoodDetailsScreen(
-                                restaurantId: widget.restaurantId,
-                                foodId: index,
-                                cartBadgeUpdateCallback:
-                                    widget.cartBadgeUpdateCallback)));
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 35.sp),
-                        width: 153.sp,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25.sp),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                blurRadius: 15,
-                                color: Colors.black.withAlpha(30)),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 46.sp, left: 12.sp, right: 12.sp),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                Restaurants.list[widget.restaurantId]
-                                    .foodList[index].name,
-                                style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 3.sp),
-                              Text(
-                                // Restaurants.list[widget.restaurantId].foodList[index].description
-                                null ?? "No description",
-                                style: TextStyle(
-                                    fontSize: 13.sp,
-                                    color: const Color(0xFF646982)),
-                              ),
-                              SizedBox(height: 2.sp),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "\$${(Restaurants.list[widget.restaurantId].foodList[index].price as double).truncate()}",
-                                    style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 30.sp,
-                                    width: 30.sp,
-                                    child: IconButton.filled(
-                                      padding: EdgeInsets.zero,
-                                      style: IconButton.styleFrom(
-                                          backgroundColor: ColorsMy.primary),
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Icons.add_rounded,
-                                        size: 25,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Column(
-                          children: [
-                            Hero(
-                              tag: "foodImg$index",
-                              child: Container(
-                                height: 79.sp,
-                                width: 114.sp,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF98a8b8),
-                                  borderRadius: BorderRadius.circular(15.sp),
-                                  image: DecorationImage(
-                                    image: AssetImage(Restaurants
-                                            .list[widget.restaurantId]
-                                            .foodList[index]
-                                            .imgAsset ??
-                                        "assets/img/no_food.jpg"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                itemBuilder: (context, index) {
+                  return FoodWidget(
+                    restaurantId: widget.restaurantId,
+                    foodId: index,
+                    cartBadgeUpdateCallback: widget.cartBadgeUpdateCallback,
+                  );
+                },
               ),
             ),
           ],
@@ -329,27 +232,11 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    return CustomAppBar(
+      title: "Restaurant View",
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.black,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Restaurant View",
-        style: TextStyle(fontSize: 17.sp),
-      ),
+      buttonBackgroundColor: const Color(0xFFecf0f4),
       actions: [
         IconButton.filled(
           color: Colors.white,
@@ -363,5 +250,38 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
         ),
       ],
     );
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: Colors.white,
+    //   surfaceTintColor: Colors.white,
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.black,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Restaurant View",
+    //     style: TextStyle(fontSize: 17.sp),
+    //   ),
+    //   actions: [
+    //     IconButton.filled(
+    //       color: Colors.white,
+    //       style: IconButton.styleFrom(backgroundColor: const Color(0xFFecf0f4)),
+    //       onPressed: () {},
+    //       icon: Icon(
+    //         Icons.more_horiz,
+    //         color: Colors.black,
+    //         size: 30.sp,
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }

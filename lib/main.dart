@@ -4,6 +4,7 @@ import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/login_screen.dart';
 
 void main() {
+  ScreenUtil.ensureScreenSize();
   runApp(const MainApp());
 }
 
@@ -21,6 +22,7 @@ class MainApp extends StatelessWidget {
           primaryColor: ColorsMy.primary,
           colorScheme: ColorScheme.fromSeed(
             seedColor: ColorsMy.primary,
+            // ignore: deprecated_member_use
             background: Colors.white,
           ),
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
-import 'package:food_delivery_gd/widgets/text_box.dart';
+import 'package:food_delivery_gd/screens/payment_screen.dart';
+import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key, required this.cartBadgeUpdateCallback});
@@ -24,7 +24,7 @@ class _CartScreenState extends State<CartScreen> {
 
     // ignore: no_leading_underscores_for_local_identifiers
     double _totalValue = 0;
-    for (CartItem cartItem in cart) {
+    for (CartItem cartItem in cart.items) {
       _totalValue += cartItem.food.price * cartItem.count;
     }
     totalValue = _totalValue;
@@ -34,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       // ignore: no_leading_underscores_for_local_identifiers
       double _totalValue = 0;
-      for (CartItem cartItem in cart) {
+      for (CartItem cartItem in cart.items) {
         _totalValue += cartItem.food.price * cartItem.count;
       }
       totalValue = _totalValue;
@@ -56,10 +56,10 @@ class _CartScreenState extends State<CartScreen> {
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: cart.length,
+                itemCount: cart.items.length,
                 itemBuilder: (context, index) {
                   return CartItemWidget(
-                    cartItem: cart[index],
+                    cartItem: cart.items[index],
                     onPriceChanged: updateTotalValue,
                     cartItemIndex: index,
                   );
@@ -143,19 +143,32 @@ class _CartScreenState extends State<CartScreen> {
                 ],
               ),
               SizedBox(height: 26.sp),
-              Container(
-                height: 62.sp,
-                width: 327.sp,
-                decoration: BoxDecoration(
-                    color: ColorsMy.primary,
-                    borderRadius: BorderRadius.circular(12.sp)),
-                child: Center(
-                  child: Text(
-                    "PLACE ORDER",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold),
+              GestureDetector(
+                onTap: cart.items.isNotEmpty
+                    ? () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PaymentScreen(totalValue: totalValue)));
+                      }
+                    : () {},
+                child: Container(
+                  height: 62.sp,
+                  width: 327.sp,
+                  decoration: BoxDecoration(
+                      color: cart.items.isNotEmpty
+                          ? ColorsMy.primary
+                          : Theme.of(context).disabledColor,
+                      borderRadius: BorderRadius.circular(12.sp)),
+                  child: Center(
+                    child: Text(
+                      "PLACE ORDER",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
@@ -166,190 +179,48 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60.sp,
+  PreferredSizeWidget appBar(BuildContext context) {
+    // return AppBar(
+    //   toolbarHeight: 60.sp,
+    //   backgroundColor: const Color(0xFF121223),
+    //   surfaceTintColor: const Color(0xFF121223),
+    //   leading: IconButton.filled(
+    //     color: Colors.white,
+    //     style: IconButton.styleFrom(backgroundColor: const Color(0xFF292939)),
+    //     onPressed: () {
+    //       Navigator.pop(context);
+    //     },
+    //     icon: Icon(
+    //       Icons.chevron_left,
+    //       color: Colors.white,
+    //       size: 30.sp,
+    //     ),
+    //   ),
+    //   title: Text(
+    //     "Cart",
+    //     style: TextStyle(fontSize: 17.sp, color: Colors.white),
+    //   ),
+    //   // actions: [
+    //   //   GestureDetector(
+    //   //     onTap: () {},
+    //   //     child: Text(
+    //   //       "DONE",
+    //   //       style: TextStyle(
+    //   //         color: ColorsMy.success,
+    //   //         fontSize: 14.sp,
+    //   //         decoration: TextDecoration.underline,
+    //   //         decorationColor: ColorsMy.success,
+    //   //       ),
+    //   //     ),
+    //   //   )
+    //   // ],
+    // );
+    return CustomAppBar(
+      title: "Cart",
       backgroundColor: const Color(0xFF121223),
-      surfaceTintColor: const Color(0xFF121223),
-      leading: IconButton.filled(
-        color: Colors.white,
-        style: IconButton.styleFrom(backgroundColor: const Color(0xFF292939)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.chevron_left,
-          color: Colors.white,
-          size: 30.sp,
-        ),
-      ),
-      title: Text(
-        "Cart",
-        style: TextStyle(fontSize: 17.sp, color: Colors.white),
-      ),
-      // actions: [
-      //   GestureDetector(
-      //     onTap: () {},
-      //     child: Text(
-      //       "DONE",
-      //       style: TextStyle(
-      //         color: ColorsMy.success,
-      //         fontSize: 14.sp,
-      //         decoration: TextDecoration.underline,
-      //         decorationColor: ColorsMy.success,
-      //       ),
-      //     ),
-      //   )
-      // ],
-    );
-  }
-}
-
-class CartItemWidget extends StatefulWidget {
-  const CartItemWidget({
-    super.key,
-    required this.cartItem,
-    required this.onPriceChanged,
-    required this.cartItemIndex,
-  });
-
-  final CartItem cartItem;
-  final int cartItemIndex;
-  final Function onPriceChanged;
-
-  @override
-  State<CartItemWidget> createState() => _CartItemWidgetState();
-}
-
-class _CartItemWidgetState extends State<CartItemWidget> {
-  int foodCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    foodCount = widget.cartItem.count;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.sp, vertical: 16.sp),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 117.sp,
-            width: 136.sp,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.sp),
-              image: DecorationImage(
-                image: AssetImage(
-                    widget.cartItem.food.imgAsset ?? "assets/img/no_food.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          SizedBox(width: 20.sp),
-          SizedBox(
-            height: 117.sp,
-            width: 170.sp,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.cartItem.food.name,
-                  style: TextStyle(color: Colors.white, fontSize: 18.sp),
-                ),
-                Text(
-                  "\$${widget.cartItem.food.price * foodCount}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.cartItem.size ?? "",
-                        style: TextStyle(
-                          color: const Color(0xFF888891),
-                          fontSize: 18.sp,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 48.sp,
-                        width: 89.sp,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  foodCount > 1
-                                      ? {
-                                          cart[widget.cartItemIndex].count--,
-                                          foodCount--
-                                        }
-                                      : {};
-                                });
-
-                                widget.onPriceChanged();
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: const Color(0xFF41414f),
-                                radius: 11.sp,
-                                child: SvgPicture.asset(
-                                  "assets/svg/icons/minus.svg",
-                                  color: Colors.white,
-                                  width: 15.sp,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              foodCount.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  foodCount < 10
-                                      ? {
-                                          cart[widget.cartItemIndex].count++,
-                                          foodCount++
-                                        }
-                                      : {};
-                                });
-                                widget.onPriceChanged();
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: const Color(0xFF41414f),
-                                radius: 11.sp,
-                                child: SvgPicture.asset(
-                                  "assets/svg/icons/plus.svg",
-                                  color: Colors.white,
-                                  width: 15.sp,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
+      buttonBackgroundColor: const Color(0xFF292939),
+      iconColor: Colors.white,
+      textColor: Colors.white,
     );
   }
 }

@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: ColorsMy.primary,
               offset: const Offset(-2, 0),
               label: Text(
-                cart.length.toString(),
+                cart.items.length.toString(),
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
               ),
               child: IconButton.filled(
@@ -542,6 +542,7 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(
                   icon: SvgPicture.asset(
                     "assets/svg/icons/search.svg",
+                    // ignore: deprecated_member_use
                     color: const Color(0xFFa0a5ba),
                   ),
                   hintText: "Search dishes, restaurants",
