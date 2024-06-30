@@ -5,12 +5,21 @@ import 'package:food_delivery_gd/models/colors.dart';
 class TextBox extends StatefulWidget {
   const TextBox({
     super.key,
+    //
     this.titleText,
+    this.titleTextColor = const Color(0xFF32343E),
+    this.titleTextSize = 13,
+    //
     required this.hintText,
-    this.password = false,
+    this.textSize = 14,
+    //
     this.text = "",
     this.controller,
+    //
+    this.password = false,
+    //
     this.height,
+    this.width,
   });
 
   final String? titleText;
@@ -19,6 +28,10 @@ class TextBox extends StatefulWidget {
   final String text;
   final TextEditingController? controller;
   final double? height;
+  final double? width;
+  final Color titleTextColor;
+  final double titleTextSize;
+  final double textSize;
 
   @override
   State<TextBox> createState() => _TextBoxState();
@@ -42,13 +55,15 @@ class _TextBoxState extends State<TextBox> {
         widget.titleText != null
             ? Text(
                 widget.titleText!,
-                style: TextStyle(fontSize: 13.sp),
+                style: TextStyle(
+                    fontSize: widget.titleTextSize,
+                    color: widget.titleTextColor),
               )
             : const SizedBox.shrink(),
         SizedBox(height: 8.sp),
         Container(
           height: widget.height ?? 62.sp,
-          width: 327.sp,
+          width: widget.width ?? 327.sp,
           decoration: BoxDecoration(
             color: const Color(0xFFf0f5fa),
             borderRadius: BorderRadius.circular(10.sp),
@@ -62,10 +77,11 @@ class _TextBoxState extends State<TextBox> {
                   Flexible(
                     child: TextField(
                       controller: controller,
+                      style: TextStyle(fontSize: widget.textSize),
                       decoration: InputDecoration(
                           hintText: widget.hintText,
                           hintStyle: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: widget.textSize,
                             color: ColorsMy.gray1,
                           ),
                           border: InputBorder.none),

@@ -10,6 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions = const [],
     this.textColor = const Color(0xFF181C2E),
     this.iconColor = Colors.black,
+    this.icon = Icons.chevron_left_rounded,
   });
 
   final String title;
@@ -18,6 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color buttonBackgroundColor;
   final Color textColor;
   final Color iconColor;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +64,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Navigator.pop(context);
                   },
                   icon: Icon(
-                    Icons.chevron_left,
+                    icon,
                     color: iconColor,
-                    size: 30.sp,
+                    size: 26.sp,
                   ),
                 ),
                 SizedBox(width: 16.sp),

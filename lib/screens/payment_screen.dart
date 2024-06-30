@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/payment_method.dart';
+import 'package:food_delivery_gd/screens/add_card_screen.dart';
+import 'package:food_delivery_gd/screens/payment_successful_screen.dart';
 import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -76,38 +78,46 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
           ),
           SizedBox(height: 15.sp),
-          Container(
-            height: 62.sp,
-            width: 327.sp,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.sp),
-              color: Colors.white,
-              border: Border.all(
-                color: const Color(0xFFf0f5fa),
-                width: 2.sp,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddCardScreen()));
+            },
+            child: Container(
+              height: 62.sp,
+              width: 327.sp,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.sp),
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(0xFFf0f5fa),
+                  width: 2.sp,
+                ),
               ),
-            ),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    "assets/svg/icons/plus.svg",
-                    // ignore: deprecated_member_use
-                    color: ColorsMy.primary,
-                    height: 25.sp,
-                  ),
-                  SizedBox(width: 5.sp),
-                  Text(
-                    "ADD NEW",
-                    style: TextStyle(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/svg/icons/plus.svg",
+                      // ignore: deprecated_member_use
                       color: ColorsMy.primary,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
+                      height: 25.sp,
                     ),
-                  )
-                ],
+                    SizedBox(width: 5.sp),
+                    Text(
+                      "ADD NEW",
+                      style: TextStyle(
+                        color: ColorsMy.primary,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -137,7 +147,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     SizedBox(height: 26.sp),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const PaymentSuccessfulScreen()));
+                      },
                       child: Container(
                         height: 62.sp,
                         width: 327.sp,

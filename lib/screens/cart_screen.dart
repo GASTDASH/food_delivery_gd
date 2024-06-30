@@ -17,6 +17,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final TextEditingController addressController = TextEditingController();
   double totalValue = 0;
+  bool hasCard = false;
 
   @override
   void initState() {
