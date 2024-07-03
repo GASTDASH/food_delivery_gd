@@ -35,7 +35,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        myAccount.fullname,
+                        account.fullname,
                         style: TextStyle(
                             fontSize: 20.sp, fontWeight: FontWeight.bold),
                       ),
@@ -63,21 +63,21 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       iconAsset: "assets/svg/icons/user.svg",
                       iconColor: const Color(0xFFFB6F3D),
                       title: "FULL NAME",
-                      subtitle: myAccount.fullname,
+                      subtitle: account.fullname,
                     ),
                     SizedBox(height: 16.sp),
                     infoButton(
                       iconAsset: "assets/svg/icons/mail.svg",
                       iconColor: const Color(0xFF413DFB),
                       title: "EMAIL",
-                      subtitle: myAccount.email,
+                      subtitle: account.email,
                     ),
                     SizedBox(height: 16.sp),
                     infoButton(
                       iconAsset: "assets/svg/icons/call.svg",
                       iconColor: const Color(0xFF369BFF),
                       title: "PHONE NUMBER",
-                      subtitle: myAccount.phone ?? "",
+                      subtitle: account.phone ?? "",
                     ),
                   ],
                 ),

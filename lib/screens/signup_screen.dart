@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_gd/models/account.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/loading_screen.dart';
 import 'package:food_delivery_gd/screens/location_access_screen.dart';
-import 'package:food_delivery_gd/supabase.dart';
 
 import '../widgets/text_box.dart';
 
@@ -30,26 +30,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _isLoading = true;
         });
 
-        // Регистрация
-        await supabase.auth.signUp(
+        await accountSignUp(
           email: emailController.text,
           password: passwordController.text,
+          fullname: nameController.text,
         );
 
-        // Авторизация
-        await supabase.auth.signInWithPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-
-        String id = supabase.auth.currentSession!.user.id;
-
-        await supabase.from("accounts").insert(
-          {
-            "id": id,
-            "fullname": nameController.text,
-          },
-        );
+        account = Account(email: "{email}", fullname: "{fullname}");
+        account.update();
 
         if (mounted) {
           Navigator.pushAndRemoveUntil(
@@ -63,7 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(e.toString()),
-              duration: const Duration(seconds: 5),
+              duration: Durations.extralong4,
             ),
           );
         }
@@ -105,7 +93,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return _isLoading
         ? const LoadingScreen(text: "Signing Up...")
         : Scaffold(
-            resizeToAvoidBottomInset: false,
             backgroundColor: const Color(0xFF121223),
             body: Stack(
               children: [

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_gd/models/account.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/forgot_password_screen.dart';
 import 'package:food_delivery_gd/screens/loading_screen.dart';
 import 'package:food_delivery_gd/screens/location_access_screen.dart';
 import 'package:food_delivery_gd/screens/signup_screen.dart';
-import 'package:food_delivery_gd/supabase.dart';
 
 import '../widgets/text_box.dart';
 
@@ -31,10 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      await supabase.auth.signInWithPassword(
+      await accountLogin(
         email: emailController.text,
         password: passwordController.text,
       );
+
+      account = Account(email: "{email}", fullname: "{fullname}");
+      account.update();
 
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -46,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Ошибка"),
+          SnackBar(
+            content: Text(e.toString()),
             duration: Durations.extralong4,
           ),
         );

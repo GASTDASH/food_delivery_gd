@@ -482,8 +482,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             color: const Color(0xFF98a8b8),
                             image: DecorationImage(
-                                image: AssetImage(
-                                    Categories.list[index].smallImgAsset),
+                                image:
+                                    AssetImage(Categories.list[index].imgAsset),
                                 fit: BoxFit.cover),
                             shape: BoxShape.circle,
                           ),

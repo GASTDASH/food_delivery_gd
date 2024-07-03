@@ -22,9 +22,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
 
-    fullnameController.text = myAccount.fullname;
-    emailController.text = myAccount.email;
-    phoneController.text = myAccount.phone ?? "";
+    fullnameController.text = account.fullname;
+    emailController.text = account.email;
+    phoneController.text = account.phone ?? "";
     bioController.text = "I love fast food";
   }
 

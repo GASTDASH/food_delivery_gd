@@ -1,21 +1,21 @@
 abstract class Categories {
   static List list = <Category>[
-    Category(name: "All", smallImgAsset: "assets/img/all_food.jpg"),
-    Category(name: "Hot Dog", smallImgAsset: "assets/img/hotdog.jpg"),
-    Category(name: "Burger", smallImgAsset: "assets/img/burger.jpg"),
-    Category(name: "Pizza", smallImgAsset: "assets/img/pizza.jpg"),
-    Category(name: "Chicken", smallImgAsset: "assets/img/chicken.png"),
-    Category(name: "Wings", smallImgAsset: "assets/img/wings.jpg"),
-    Category(name: "Rice", smallImgAsset: "assets/img/rice.png"),
-    Category(name: "Sandwich", smallImgAsset: "assets/img/sandwich.png"),
+    Category(name: "All", imgAsset: "assets/img/all_food.jpg"),
+    Category(name: "Hot Dog", imgAsset: "assets/img/hotdog.jpg"),
+    Category(name: "Burger", imgAsset: "assets/img/burger.jpg"),
+    Category(name: "Pizza", imgAsset: "assets/img/pizza.jpg"),
+    Category(name: "Chicken", imgAsset: "assets/img/chicken.png"),
+    Category(name: "Wings", imgAsset: "assets/img/wings.jpg"),
+    Category(name: "Rice", imgAsset: "assets/img/rice.png"),
+    Category(name: "Sandwich", imgAsset: "assets/img/sandwich.png"),
   ];
 }
 
 class Category {
   Category({
     required this.name,
-    required this.smallImgAsset,
+    required this.imgAsset,
   });
   final String name;
-  final String smallImgAsset;
+  final String imgAsset;
 }
