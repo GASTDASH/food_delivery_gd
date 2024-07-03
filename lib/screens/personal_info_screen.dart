@@ -77,7 +77,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       iconAsset: "assets/svg/icons/call.svg",
                       iconColor: const Color(0xFF369BFF),
                       title: "PHONE NUMBER",
-                      subtitle: myAccount.phone,
+                      subtitle: myAccount.phone ?? "",
                     ),
                   ],
                 ),

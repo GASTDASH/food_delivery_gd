@@ -24,7 +24,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     fullnameController.text = myAccount.fullname;
     emailController.text = myAccount.email;
-    phoneController.text = myAccount.phone;
+    phoneController.text = myAccount.phone ?? "";
     bioController.text = "I love fast food";
   }
 

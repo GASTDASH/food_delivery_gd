@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/login_screen.dart';
+import 'package:food_delivery_gd/supabase.dart';
 
-void main() {
-  ScreenUtil.ensureScreenSize();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ScreenUtil.ensureScreenSize();
+
+  await supabaseConnect();
+
   runApp(const MainApp());
 }
 

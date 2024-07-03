@@ -12,8 +12,11 @@ class Account {
   final String password;
   final String fullname;
   final String? avatarAsset;
-  final String phone;
+  final String? phone;
   final List<String>? addresses;
+
+  //
+  // login
 }
 
 Account myAccount = Account(
