@@ -3,8 +3,8 @@ import 'package:food_delivery_gd/models/food.dart';
 import 'package:food_delivery_gd/models/ingredients.dart';
 
 abstract class Restaurants {
-  static List list = <Restaurant>[
-    Restaurant(
+  static List list = <RestaurantOld>[
+    RestaurantOld(
       name: "Rose Garden Restaurant",
       imgAsset: "assets/img/rest1.jpg",
       categories: [
@@ -52,7 +52,7 @@ abstract class Restaurants {
         ),
       ],
     ),
-    Restaurant(
+    RestaurantOld(
       name: "Savor's Haven",
       imgAsset: "assets/img/rest2.jpg",
       categories: [
@@ -76,7 +76,7 @@ abstract class Restaurants {
         ),
       ],
     ),
-    Restaurant(
+    RestaurantOld(
       name: "The Culinary Canvas",
       imgAsset: "assets/img/rest3.jpg",
       categories: [
@@ -99,7 +99,7 @@ abstract class Restaurants {
         ),
       ],
     ),
-    Restaurant(
+    RestaurantOld(
       name: "Bite Bistro",
       imgAsset: "assets/img/rest4.jpg",
       categories: [
@@ -125,8 +125,8 @@ abstract class Restaurants {
   ];
 }
 
-class Restaurant {
-  Restaurant({
+class RestaurantOld {
+  RestaurantOld({
     required this.name,
     required this.imgAsset,
     required this.categories,
@@ -144,4 +144,48 @@ class Restaurant {
   final double deliveryPrice;
   final int deliveryTime;
   final String description;
+
+  factory RestaurantOld.fromMap(Map map) {
+    return RestaurantOld(
+      name: map["name"],
+      imgAsset: map["img_asset"],
+      categories: map["categories"],
+      rating: map["rating"],
+      deliveryPrice: map["delivery_price"],
+      deliveryTime: map["delivery_time"],
+      description: map["description"],
+      foodList: map["foodList"],
+    );
+  }
+}
+
+class Restaurant {
+  Restaurant({
+    required this.name,
+    required this.imgAsset,
+    required this.categories,
+    required this.rating,
+    required this.deliveryPrice,
+    required this.deliveryTime,
+    required this.description,
+  });
+  final String name;
+  final String imgAsset;
+  final List<Category> categories;
+  final double rating;
+  final double deliveryPrice;
+  final int deliveryTime;
+  final String description;
+
+  factory Restaurant.fromMap(Map map) {
+    return Restaurant(
+      name: map["name"],
+      imgAsset: map["img_asset"],
+      categories: map["categories"],
+      rating: map["rating"],
+      deliveryPrice: map["delivery_price"],
+      deliveryTime: map["delivery_time"],
+      description: map["description"],
+    );
+  }
 }

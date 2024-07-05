@@ -8,6 +8,8 @@ import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/screens/cart_screen.dart';
 import 'package:food_delivery_gd/screens/profile_screen.dart';
 import 'package:food_delivery_gd/screens/restaurant_view_screen.dart';
+import 'package:food_delivery_gd/supabase.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,31 +19,130 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isGettingRestaurants = false;
+  bool _isGettingCategories = false;
+
+  List<Restaurant> restaurantList = [];
+  List<Category> categoriesList = [];
+
   int selectedCategoryIndex = 0;
 
   void cartBadgeUpdateCallback() {
     setState(() {});
   }
 
+  Future<void> getCategories() async {
+    setState(() {
+      _isGettingCategories = true;
+    });
+
+    print("[DEBUG] --- Получение информации о категориях");
+
+    var categories = await supabase.from("categories").select("*");
+
+    categoriesList.clear();
+
+    for (var category in categories) {
+      categoriesList.add(
+        Category(
+          name: category["name"],
+          imgAsset: category["img_asset"],
+        ),
+      );
+    }
+
+    setState(() {
+      _isGettingCategories = false;
+    });
+  }
+
+  Future<void> getRestaurants() async {
+    setState(() {
+      _isGettingRestaurants = true;
+    });
+
+    print("[DEBUG] --- Получение информации о ресторанах");
+
+    var restaurants = await supabase.from("restaurants").select("*");
+    // print("restaurants = ");
+    // print(restaurants);
+
+    var restaurantsCategories = await supabase
+        .from("restaurants-categories")
+        .select("*, categories!inner(*)");
+    // print("restaurantsCategories = ");
+    // print(restaurantsCategories);
+
+    restaurantList.clear();
+    for (var restaurant in restaurants) {
+      List<Category> tempCategories = [];
+
+      for (var object in restaurantsCategories) {
+        if (restaurant["restaurant_id"] == object["restaurant_id"]) {
+          tempCategories.add(Category(
+              name: object["categories"]["name"],
+              imgAsset: object["categories"]["img_asset"]));
+          // print("yes");
+        }
+      }
+
+      restaurantList.add(
+        Restaurant(
+          name: restaurant["name"],
+          imgAsset: restaurant["img_asset"],
+          categories: tempCategories,
+          rating: restaurant["rating"],
+          deliveryPrice: restaurant["delivery_price"].toDouble(),
+          deliveryTime: restaurant["delivery_time"],
+          description: restaurant["description"],
+        ),
+      );
+    }
+
+    setState(() {
+      _isGettingRestaurants = false;
+    });
+  }
+
+  Future<void> update() async {
+    Future.wait([
+      getRestaurants(),
+      getCategories(),
+    ]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => update());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 54.sp),
-            topbar(),
-            SizedBox(height: 24.sp),
-            hello(),
-            SizedBox(height: 16.sp),
-            search(),
-            SizedBox(height: 32.sp),
-            categories(),
-            SizedBox(height: 18.sp),
-            restaurants(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await update();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 54.sp),
+              topbar(),
+              SizedBox(height: 24.sp),
+              hello(),
+              SizedBox(height: 16.sp),
+              search(),
+              SizedBox(height: 32.sp),
+              categories(),
+              SizedBox(height: 18.sp),
+              restaurants(),
+            ],
+          ),
         ),
       ),
     );
@@ -81,123 +182,169 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 24.sp),
           child: SizedBox(
             width: 375.sp,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: Restaurants.list.length,
-              itemBuilder: (context, index) {
-                List<String> categoriesNames = [];
-                for (Category category in Restaurants.list[index].categories) {
-                  categoriesNames.add(category.name);
-                }
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RestaurantViewScreen(
-                                  restaurantId: index,
-                                  cartBadgeUpdateCallback:
-                                      cartBadgeUpdateCallback,
-                                )));
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 28.sp),
+            child: _isGettingRestaurants
+                ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Hero(
-                          tag: "restImg$index",
-                          child: Container(
-                            height: 137.sp,
-                            width: 327.sp,
-                            decoration: BoxDecoration(
-                                color: const Color(0xFF98a8b8),
-                                borderRadius: BorderRadius.circular(10.sp),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      Restaurants.list[index].imgAsset),
-                                  fit: BoxFit.cover,
-                                )),
+                        SizedBox(height: 24.sp),
+                        Container(
+                          height: 137.sp,
+                          width: 327.sp,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF98a8b8),
+                            borderRadius: BorderRadius.circular(10.sp),
                           ),
                         ),
                         SizedBox(height: 8.sp),
-                        Text(
-                          Restaurants.list[index].name,
-                          style: TextStyle(fontSize: 20.sp),
+                        Container(
+                          height: 20.sp,
+                          width: 270.sp,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF98a8b8),
+                            borderRadius: BorderRadius.circular(4.sp),
+                          ),
                         ),
-                        SizedBox(height: 5.sp),
-                        Text(
-                          categoriesNames.join(" - "),
-                          style: TextStyle(
-                              color: const Color(0xFFa0a5ba), fontSize: 14.sp),
-                        ),
-                        SizedBox(height: 12.sp),
-                        Row(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.star_border_outlined,
-                                  color: ColorsMy.primary,
-                                  size: 30,
-                                ),
-                                SizedBox(width: 4.sp),
-                                Text(
-                                  Restaurants.list[index].rating.toString(),
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                            SizedBox(width: 24.sp),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.delivery_dining_outlined,
-                                  color: ColorsMy.primary,
-                                  size: 30,
-                                ),
-                                SizedBox(width: 4.sp),
-                                Text(
-                                  Restaurants.list[index].deliveryPrice == 0.0
-                                      ? "Free"
-                                      : Restaurants.list[index].deliveryPrice
-                                          .toString(),
-                                  style: TextStyle(fontSize: 14.sp),
-                                )
-                              ],
-                            ),
-                            SizedBox(width: 24.sp),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.access_time_rounded,
-                                  color: ColorsMy.primary,
-                                  size: 30,
-                                ),
-                                SizedBox(width: 4.sp),
-                                Text(
-                                  "${Restaurants.list[index].deliveryTime} min",
-                                  style: TextStyle(fontSize: 14.sp),
-                                )
-                              ],
-                            ),
-                          ],
+                        SizedBox(height: 8.sp),
+                        Container(
+                          height: 20.sp,
+                          width: 200.sp,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF98a8b8),
+                            borderRadius: BorderRadius.circular(4.sp),
+                          ),
                         ),
                       ],
                     ),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: restaurantList.length,
+                    itemBuilder: (context, index) {
+                      List<String> categoriesNames = [];
+                      for (Category category
+                          in restaurantList[index].categories) {
+                        categoriesNames.add(category.name);
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RestaurantViewScreen(
+                                        restaurantId: index,
+                                        cartBadgeUpdateCallback:
+                                            cartBadgeUpdateCallback,
+                                      )));
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 28.sp),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Hero(
+                                tag: "restImg$index",
+                                child: Container(
+                                  height: 137.sp,
+                                  width: 327.sp,
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFF98a8b8),
+                                      borderRadius:
+                                          BorderRadius.circular(10.sp),
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            restaurantList[index].imgAsset),
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
+                              ),
+                              SizedBox(height: 8.sp),
+                              Text(
+                                restaurantList[index].name,
+                                style: TextStyle(fontSize: 20.sp),
+                              ),
+                              SizedBox(height: 5.sp),
+                              Text(
+                                categoriesNames.join(" - "),
+                                style: TextStyle(
+                                    color: const Color(0xFFa0a5ba),
+                                    fontSize: 14.sp),
+                              ),
+                              SizedBox(height: 12.sp),
+                              Row(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.star_border_outlined,
+                                        color: ColorsMy.primary,
+                                        size: 30,
+                                      ),
+                                      SizedBox(width: 4.sp),
+                                      Text(
+                                        restaurantList[index].rating.toString(),
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(width: 24.sp),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delivery_dining_outlined,
+                                        color: ColorsMy.primary,
+                                        size: 30,
+                                      ),
+                                      SizedBox(width: 4.sp),
+                                      Text(
+                                        restaurantList[index].deliveryPrice ==
+                                                0.0
+                                            ? "Free"
+                                            : restaurantList[index]
+                                                .deliveryPrice
+                                                .toString(),
+                                        style: TextStyle(fontSize: 14.sp),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(width: 24.sp),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.access_time_rounded,
+                                        color: ColorsMy.primary,
+                                        size: 30,
+                                      ),
+                                      SizedBox(width: 4.sp),
+                                      Text(
+                                        "${restaurantList[index].deliveryTime} min",
+                                        style: TextStyle(fontSize: 14.sp),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         )
       ],
@@ -446,61 +593,97 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 375.sp,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: Categories.list.length,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(
-                  left: index == 0 ? 24.sp : 7.sp,
-                  right: index == Categories.list.length - 1 ? 24.sp : 7.sp,
-                  top: 20.sp,
-                  bottom: 20.sp),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedCategoryIndex = index;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: selectedCategoryIndex == index
-                        ? const Color(0xFFffd27c)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(39.sp),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.black.withAlpha(40),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.sp),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 44.sp,
-                          width: 44.sp,
+            itemCount: _isGettingCategories ? 2 : categoriesList.length,
+            itemBuilder: (context, index) {
+              return _isGettingCategories
+                  ? Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: index == 0 ? 24.sp : 7.sp,
+                            right: index == Categories.list.length - 1
+                                ? 24.sp
+                                : 7.sp,
+                            top: 20.sp,
+                            bottom: 20.sp),
+                        child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF98a8b8),
-                            image: DecorationImage(
-                                image:
-                                    AssetImage(Categories.list[index].imgAsset),
-                                fit: BoxFit.cover),
-                            shape: BoxShape.circle,
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(39.sp),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.sp),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 44.sp,
+                                  width: 100.sp,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(width: 12.sp),
-                        Text(
-                          Categories.list[index].name,
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(
+                          left: index == 0 ? 24.sp : 7.sp,
+                          right: index == Categories.list.length - 1
+                              ? 24.sp
+                              : 7.sp,
+                          top: 20.sp,
+                          bottom: 20.sp),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategoryIndex = index;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: selectedCategoryIndex == index
+                                ? const Color(0xFFffd27c)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(39.sp),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.black.withAlpha(40),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.sp),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 44.sp,
+                                  width: 44.sp,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF98a8b8),
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            categoriesList[index].imgAsset),
+                                        fit: BoxFit.cover),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                SizedBox(width: 12.sp),
+                                Text(
+                                  categoriesList[index].name,
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 14.sp),
+                              ],
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 14.sp),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                      ),
+                    );
+            },
           ),
         )
       ],
