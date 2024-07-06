@@ -1,27 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_gd/logger.dart';
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/colors.dart';
+import 'package:food_delivery_gd/models/food.dart';
+import 'package:food_delivery_gd/models/ingredients.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
+import 'package:food_delivery_gd/supabase.dart';
 import 'package:food_delivery_gd/widgets/widgets.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'food_widget.dart';
 
 class RestaurantViewScreen extends StatefulWidget {
-  const RestaurantViewScreen(
-      {super.key,
-      required this.restaurantId,
-      required this.cartBadgeUpdateCallback});
+  const RestaurantViewScreen({
+    super.key,
+    required this.restaurant,
+    required this.cartBadgeUpdateCallback,
+    required this.categoriesList,
+  });
 
-  final int restaurantId;
+  final Restaurant restaurant;
   final Function cartBadgeUpdateCallback;
+  final List<Category> categoriesList;
 
   @override
   State<RestaurantViewScreen> createState() => _RestaurantViewScreenState();
 }
 
 class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
+  bool _isGettingFoodList = false;
+
+  List<Food> foodList = [];
+
   int selectedCategoryIndex = 0;
+
+  Future<void> getFoods() async {
+    setState(() {
+      _isGettingFoodList = true;
+    });
+
+    loggerNoStack.i("Получение списка товаров");
+
+    try {
+      var res = await supabase
+          .from("foods")
+          .select("*")
+          .eq("restaurant_id", widget.restaurant.id);
+
+      for (var food in res) {
+        foodList.add(
+          Food(
+            id: food["food_id"],
+            name: food["name"],
+            description: food["description"],
+            category: widget.categoriesList.firstWhere(
+              (element) => element.id == food["category_id"],
+            ),
+            ingredients: [ingredients[0]],
+            price: food["price"].toDouble(),
+            imgAsset: food["img_asset"],
+            restaurantId: food["restaurant_id"],
+          ),
+        );
+      }
+
+      setState(() {
+        _isGettingFoodList = false;
+      });
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => Future.wait([getFoods()]));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +94,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.sp),
               child: Hero(
-                tag: "restImg${widget.restaurantId}",
+                tag: "restImg${widget.restaurant.id}",
                 child: Container(
                   height: 150.sp,
                   width: 327.sp,
@@ -44,8 +102,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                     color: const Color(0xFF98a8b8),
                     borderRadius: BorderRadius.circular(32.sp),
                     image: DecorationImage(
-                      image: AssetImage(
-                          Restaurants.list[widget.restaurantId].imgAsset),
+                      image: AssetImage(widget.restaurant.imgAsset),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -60,13 +117,13 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Restaurants.list[widget.restaurantId].name,
+                    widget.restaurant.name,
                     style:
                         TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4.sp),
                   Text(
-                    Restaurants.list[widget.restaurantId].description,
+                    widget.restaurant.description,
                     style: TextStyle(
                         fontSize: 14.sp, color: const Color(0xFFa0a5ba)),
                   ),
@@ -83,8 +140,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            Restaurants.list[widget.restaurantId].rating
-                                .toString(),
+                            widget.restaurant.rating.toString(),
                             style: TextStyle(
                                 fontSize: 16.sp, fontWeight: FontWeight.bold),
                           )
@@ -101,13 +157,9 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            Restaurants.list[widget.restaurantId]
-                                        .deliveryPrice ==
-                                    0.0
+                            widget.restaurant.deliveryPrice == 0.0
                                 ? "Free"
-                                : Restaurants
-                                    .list[widget.restaurantId].deliveryPrice
-                                    .toString(),
+                                : widget.restaurant.deliveryPrice.toString(),
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -123,7 +175,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            "${Restaurants.list[widget.restaurantId].deliveryTime} min",
+                            "${widget.restaurant.deliveryTime} min",
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -139,22 +191,17 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
               width: 375.sp,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount:
-                    Restaurants.list[widget.restaurantId].categories.length,
+                itemCount: widget.restaurant.categories.length,
                 itemBuilder: (context, index) {
                   List<String> categoriesNames = [];
-                  for (Category category
-                      in Restaurants.list[widget.restaurantId].categories) {
+                  for (Category category in widget.restaurant.categories) {
                     categoriesNames.add(category.name);
                   }
 
                   return Padding(
                     padding: EdgeInsets.only(
                       left: index == 0 ? 24.sp : 7.sp,
-                      right: index ==
-                              Restaurants.list[widget.restaurantId].categories
-                                      .length -
-                                  1
+                      right: index == widget.restaurant.categories.length - 1
                           ? 24.sp
                           : 2.sp,
                     ),
@@ -209,8 +256,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount:
-                    Restaurants.list[widget.restaurantId].foodList.length,
+                itemCount: _isGettingFoodList ? 2 : foodList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisExtent: 165.sp,
@@ -218,11 +264,43 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                   mainAxisSpacing: 20.sp,
                 ),
                 itemBuilder: (context, index) {
-                  return FoodWidget(
-                    restaurantId: widget.restaurantId,
-                    foodId: index,
-                    cartBadgeUpdateCallback: widget.cartBadgeUpdateCallback,
-                  );
+                  return _isGettingFoodList
+                      ? Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(top: 35.sp),
+                                width: 153.sp,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.sp),
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Center(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 79.sp,
+                                      width: 114.sp,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF98a8b8),
+                                        borderRadius:
+                                            BorderRadius.circular(15.sp),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : FoodWidget(
+                          food: foodList[index],
+                          cartBadgeUpdateCallback:
+                              widget.cartBadgeUpdateCallback,
+                        );
                 },
               ),
             ),

@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
-import 'package:food_delivery_gd/models/restaurants.dart';
+import 'package:food_delivery_gd/models/food.dart';
 import 'package:food_delivery_gd/screens/food_details_screen.dart';
 
 class FoodWidget extends StatelessWidget {
   const FoodWidget({
     super.key,
-    required this.restaurantId,
-    required this.foodId,
+    required this.food,
     required this.cartBadgeUpdateCallback,
   });
 
-  final int restaurantId;
-  final int foodId;
+  final Food food;
   final Function cartBadgeUpdateCallback;
 
   @override
@@ -25,8 +23,7 @@ class FoodWidget extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => FoodDetailsScreen(
-                    restaurantId: restaurantId,
-                    foodId: foodId,
+                    food: food,
                     cartBadgeUpdateCallback: cartBadgeUpdateCallback)));
       },
       child: Stack(
@@ -47,7 +44,7 @@ class FoodWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Restaurants.list[restaurantId].foodList[foodId].name,
+                    food.name,
                     style:
                         TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
                   ),
@@ -64,7 +61,7 @@ class FoodWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "\$${(Restaurants.list[restaurantId].foodList[foodId].price as double).truncate()}",
+                        "\$${(food.price).truncate()}",
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.bold),
                       ),
@@ -77,10 +74,7 @@ class FoodWidget extends StatelessWidget {
                               backgroundColor: ColorsMy.primary),
                           onPressed: () {
                             cart.addItem(
-                              CartItem(
-                                  food: Restaurants
-                                      .list[restaurantId].foodList[foodId],
-                                  count: 1),
+                              CartItem(food: food, count: 1),
                             );
                             cartBadgeUpdateCallback();
                           },
@@ -100,7 +94,7 @@ class FoodWidget extends StatelessWidget {
             child: Column(
               children: [
                 Hero(
-                  tag: "foodImg$foodId",
+                  tag: "foodImg${food.id}",
                   child: Container(
                     height: 79.sp,
                     width: 114.sp,
@@ -108,9 +102,8 @@ class FoodWidget extends StatelessWidget {
                       color: const Color(0xFF98a8b8),
                       borderRadius: BorderRadius.circular(15.sp),
                       image: DecorationImage(
-                        image: AssetImage(Restaurants
-                                .list[restaurantId].foodList[foodId].imgAsset ??
-                            "assets/img/no_food.jpg"),
+                        image: AssetImage(
+                            food.imgAsset ?? "assets/img/no_food.jpg"),
                         fit: BoxFit.cover,
                       ),
                     ),

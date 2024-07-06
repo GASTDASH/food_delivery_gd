@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_gd/logger.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/categories.dart';
 import 'package:food_delivery_gd/models/colors.dart';
@@ -36,24 +37,29 @@ class _HomeScreenState extends State<HomeScreen> {
       _isGettingCategories = true;
     });
 
-    print("[DEBUG] --- Получение информации о категориях");
+    loggerNoStack.i("Получение информации о категориях");
 
-    var categories = await supabase.from("categories").select("*");
+    try {
+      var categories = await supabase.from("categories").select("*");
 
-    categoriesList.clear();
+      categoriesList.clear();
 
-    for (var category in categories) {
-      categoriesList.add(
-        Category(
-          name: category["name"],
-          imgAsset: category["img_asset"],
-        ),
-      );
+      for (var category in categories) {
+        categoriesList.add(
+          Category(
+            id: category["category_id"],
+            name: category["name"],
+            imgAsset: category["img_asset"],
+          ),
+        );
+      }
+
+      setState(() {
+        _isGettingCategories = false;
+      });
+    } catch (e) {
+      logger.e(e.toString());
     }
-
-    setState(() {
-      _isGettingCategories = false;
-    });
   }
 
   Future<void> getRestaurants() async {
@@ -61,47 +67,53 @@ class _HomeScreenState extends State<HomeScreen> {
       _isGettingRestaurants = true;
     });
 
-    print("[DEBUG] --- Получение информации о ресторанах");
+    loggerNoStack.i("Получение информации о ресторанах");
 
-    var restaurants = await supabase.from("restaurants").select("*");
-    // print("restaurants = ");
-    // print(restaurants);
+    try {
+      var restaurants = await supabase.from("restaurants").select("*");
+      // print("restaurants = ");
+      // print(restaurants);
 
-    var restaurantsCategories = await supabase
-        .from("restaurants-categories")
-        .select("*, categories!inner(*)");
-    // print("restaurantsCategories = ");
-    // print(restaurantsCategories);
+      var restaurantsCategories = await supabase
+          .from("restaurants-categories")
+          .select("*, categories!inner(*)");
+      // print("restaurantsCategories = ");
+      // print(restaurantsCategories);
 
-    restaurantList.clear();
-    for (var restaurant in restaurants) {
-      List<Category> tempCategories = [];
+      restaurantList.clear();
+      for (var restaurant in restaurants) {
+        List<Category> tempCategories = [];
 
-      for (var object in restaurantsCategories) {
-        if (restaurant["restaurant_id"] == object["restaurant_id"]) {
-          tempCategories.add(Category(
-              name: object["categories"]["name"],
-              imgAsset: object["categories"]["img_asset"]));
-          // print("yes");
+        for (var object in restaurantsCategories) {
+          if (restaurant["restaurant_id"] == object["restaurant_id"]) {
+            tempCategories.add(Category(
+                id: object["categories"]["category_id"],
+                name: object["categories"]["name"],
+                imgAsset: object["categories"]["img_asset"]));
+            // print("yes");
+          }
         }
+
+        restaurantList.add(
+          Restaurant(
+            id: restaurant["restaurant_id"],
+            name: restaurant["name"],
+            imgAsset: restaurant["img_asset"],
+            categories: tempCategories,
+            rating: restaurant["rating"],
+            deliveryPrice: restaurant["delivery_price"].toDouble(),
+            deliveryTime: restaurant["delivery_time"],
+            description: restaurant["description"],
+          ),
+        );
       }
 
-      restaurantList.add(
-        Restaurant(
-          name: restaurant["name"],
-          imgAsset: restaurant["img_asset"],
-          categories: tempCategories,
-          rating: restaurant["rating"],
-          deliveryPrice: restaurant["delivery_price"].toDouble(),
-          deliveryTime: restaurant["delivery_time"],
-          description: restaurant["description"],
-        ),
-      );
+      setState(() {
+        _isGettingRestaurants = false;
+      });
+    } catch (e) {
+      logger.e(e.toString());
     }
-
-    setState(() {
-      _isGettingRestaurants = false;
-    });
   }
 
   Future<void> update() async {
@@ -238,9 +250,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => RestaurantViewScreen(
-                                        restaurantId: index,
+                                        restaurant: restaurantList[index],
                                         cartBadgeUpdateCallback:
                                             cartBadgeUpdateCallback,
+                                        categoriesList: categoriesList,
                                       )));
                         },
                         child: Padding(
@@ -250,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Hero(
-                                tag: "restImg$index",
+                                tag: "restImg${restaurantList[index].id}",
                                 child: Container(
                                   height: 137.sp,
                                   width: 327.sp,
@@ -602,7 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(
                             left: index == 0 ? 24.sp : 7.sp,
-                            right: index == Categories.list.length - 1
+                            right: index == categoriesList.length - 1
                                 ? 24.sp
                                 : 7.sp,
                             top: 20.sp,
@@ -629,9 +642,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Padding(
                       padding: EdgeInsets.only(
                           left: index == 0 ? 24.sp : 7.sp,
-                          right: index == Categories.list.length - 1
-                              ? 24.sp
-                              : 7.sp,
+                          right:
+                              index == categoriesList.length - 1 ? 24.sp : 7.sp,
                           top: 20.sp,
                           bottom: 20.sp),
                       child: GestureDetector(

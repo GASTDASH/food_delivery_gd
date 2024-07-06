@@ -18,7 +18,7 @@ abstract class Restaurants {
       description:
           "Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
       foodList: [
-        Food(
+        FoodOld(
           name: "Burger Ferguson",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -29,7 +29,7 @@ abstract class Restaurants {
           price: 32,
           imgAsset: "assets/img/burger2.jpg",
         ),
-        Food(
+        FoodOld(
           name: "Burger Bistro",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -40,7 +40,7 @@ abstract class Restaurants {
           price: 40,
           imgAsset: "assets/img/burger3.jpg",
         ),
-        Food(
+        FoodOld(
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -65,7 +65,7 @@ abstract class Restaurants {
       deliveryTime: 10,
       description: "Test",
       foodList: [
-        Food(
+        FoodOld(
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -88,7 +88,7 @@ abstract class Restaurants {
       deliveryTime: 15,
       description: "Test",
       foodList: [
-        Food(
+        FoodOld(
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -111,7 +111,7 @@ abstract class Restaurants {
       deliveryTime: 50,
       description: "Test",
       foodList: [
-        Food(
+        FoodOld(
           name: "Prosto Burger",
           category: Categories.list
               .firstWhere((category) => category.name == "Burger"),
@@ -139,7 +139,7 @@ class RestaurantOld {
   final String name;
   final String imgAsset;
   final List<Category> categories;
-  final List<Food> foodList;
+  final List<FoodOld> foodList;
   final double rating;
   final double deliveryPrice;
   final int deliveryTime;
@@ -161,6 +161,7 @@ class RestaurantOld {
 
 class Restaurant {
   Restaurant({
+    required this.id,
     required this.name,
     required this.imgAsset,
     required this.categories,
@@ -169,6 +170,8 @@ class Restaurant {
     required this.deliveryTime,
     required this.description,
   });
+
+  final int id;
   final String name;
   final String imgAsset;
   final List<Category> categories;
@@ -177,15 +180,16 @@ class Restaurant {
   final int deliveryTime;
   final String description;
 
-  factory Restaurant.fromMap(Map map) {
-    return Restaurant(
-      name: map["name"],
-      imgAsset: map["img_asset"],
-      categories: map["categories"],
-      rating: map["rating"],
-      deliveryPrice: map["delivery_price"],
-      deliveryTime: map["delivery_time"],
-      description: map["description"],
-    );
-  }
+  // factory Restaurant.fromMap(Map map) {
+  //   return Restaurant(
+  //     id: map["restaurant_id"],
+  //     name: map["name"],
+  //     imgAsset: map["img_asset"],
+  //     categories: map["categories"],
+  //     rating: map["rating"],
+  //     deliveryPrice: map["delivery_price"],
+  //     deliveryTime: map["delivery_time"],
+  //     description: map["description"],
+  //   );
+  // }
 }

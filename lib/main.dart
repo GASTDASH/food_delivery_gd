@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_gd/logger.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/screens/login_screen.dart';
 import 'package:food_delivery_gd/supabase.dart';
@@ -9,6 +10,8 @@ Future<void> main() async {
   await ScreenUtil.ensureScreenSize();
 
   await supabaseConnect();
+
+  logger.d("Logger is working!");
 
   runApp(const MainApp());
 }

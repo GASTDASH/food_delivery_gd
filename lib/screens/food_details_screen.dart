@@ -3,18 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
+import 'package:food_delivery_gd/models/food.dart';
 import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
   const FoodDetailsScreen(
-      {super.key,
-      required this.restaurantId,
-      required this.foodId,
-      required this.cartBadgeUpdateCallback});
+      {super.key, required this.food, required this.cartBadgeUpdateCallback});
 
-  final int restaurantId;
-  final int foodId;
+  final Food food;
   final Function cartBadgeUpdateCallback;
 
   @override
@@ -38,7 +35,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.sp),
               child: Hero(
-                tag: "foodImg${widget.foodId}",
+                tag: "foodImg${widget.food.id}",
                 child: Container(
                   height: 184.sp,
                   width: 327.sp,
@@ -46,9 +43,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                     color: const Color(0xFF98a8b8),
                     borderRadius: BorderRadius.circular(32.sp),
                     image: DecorationImage(
-                      image: AssetImage(Restaurants.list[widget.restaurantId]
-                              .foodList[widget.foodId].imgAsset ??
-                          "assets/img/no_food.jpg"),
+                      image: AssetImage(
+                          widget.food.imgAsset ?? "assets/img/no_food.jpg"),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -90,7 +86,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      Restaurants.list[widget.restaurantId].name,
+                      widget.food.restaurantId.toString(),
                       style: TextStyle(
                         fontSize: 14.sp,
                       ),
@@ -107,16 +103,13 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Restaurants
-                        .list[widget.restaurantId].foodList[widget.foodId].name,
+                    widget.food.name,
                     style:
                         TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4.sp),
                   Text(
-                    Restaurants.list[widget.restaurantId]
-                            .foodList[widget.foodId].description ??
-                        "No description",
+                    widget.food.description ?? "No description",
                     style: TextStyle(
                         fontSize: 14.sp, color: const Color(0xFFa0a5ba)),
                   ),
@@ -133,8 +126,11 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            Restaurants.list[widget.restaurantId].rating
-                                .toString(),
+                            true
+                                ? "rating"
+                                : Restaurants
+                                    .list[widget.food.restaurantId].rating
+                                    .toString(),
                             style: TextStyle(
                                 fontSize: 16.sp, fontWeight: FontWeight.bold),
                           )
@@ -151,13 +147,15 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            Restaurants.list[widget.restaurantId]
-                                        .deliveryPrice ==
-                                    0.0
-                                ? "Free"
-                                : Restaurants
-                                    .list[widget.restaurantId].deliveryPrice
-                                    .toString(),
+                            true
+                                ? "price"
+                                : Restaurants.list[widget.food.restaurantId]
+                                            .deliveryPrice ==
+                                        0.0
+                                    ? "Free"
+                                    : Restaurants.list[widget.food.restaurantId]
+                                        .deliveryPrice
+                                        .toString(),
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -173,7 +171,9 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            "${Restaurants.list[widget.restaurantId].deliveryTime} min",
+                            true
+                                ? "time"
+                                : "${Restaurants.list[widget.food.restaurantId].deliveryTime} min",
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -184,9 +184,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               ),
             ),
             SizedBox(height: 26.sp),
-            Restaurants.list[widget.restaurantId].foodList[widget.foodId]
-                        .sizes !=
-                    null
+            widget.food.sizes != null
                 ? Column(
                     children: [
                       Padding(
@@ -244,8 +242,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                       mainAxisSpacing: 20.sp,
                     ),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: Restaurants.list[widget.restaurantId]
-                        .foodList[widget.foodId].ingredients.length,
+                    itemCount: widget.food.ingredients.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Column(
@@ -253,22 +250,17 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           CircleAvatar(
                             radius: 25.sp,
                             backgroundColor: const Color(0xFFffebe4),
-                            child: SvgPicture.asset(
-                              Restaurants
-                                  .list[widget.restaurantId]
-                                  .foodList[widget.foodId]
-                                  .ingredients[index]
-                                  .iconAsset,
-                              height: 25.sp,
-                            ),
+                            child: widget.food.ingredients[index].iconAsset !=
+                                    null
+                                ? SvgPicture.asset(
+                                    widget.food.ingredients[index].iconAsset!,
+                                    height: 25.sp,
+                                  )
+                                : null,
                           ),
                           SizedBox(height: 5.sp),
                           Text(
-                            Restaurants
-                                .list[widget.restaurantId]
-                                .foodList[widget.foodId]
-                                .ingredients[index]
-                                .name,
+                            widget.food.ingredients[index].name,
                             style: TextStyle(
                                 color: const Color(0xFF747783),
                                 fontSize: 12.sp,
@@ -304,7 +296,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "\$${((Restaurants.list[widget.restaurantId].foodList[widget.foodId].price) as double).truncate()}",
+                    "\$${(widget.food.price).truncate()}",
                     style: TextStyle(fontSize: 28.sp),
                   ),
                   Container(
@@ -372,8 +364,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 onTap: () {
                   cart.addItem(
                     CartItem(
-                        food: Restaurants
-                            .list[widget.restaurantId].foodList[widget.foodId],
+                        food: Restaurants.list[widget.food.restaurantId]
+                            .foodList[widget.food.id],
                         count: foodCount),
                   );
                   widget.cartBadgeUpdateCallback();
