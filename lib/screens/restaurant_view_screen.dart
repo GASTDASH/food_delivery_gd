@@ -48,7 +48,26 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
           .select("*")
           .eq("restaurant_id", widget.restaurant.id);
 
+      var resIngredients = await supabase
+          .from("food-ingredients")
+          .select("*, foods!inner(*), ingredients!inner(*)");
+
       for (var food in res) {
+        var resIngredientsList =
+            resIngredients.where((e) => e["food_id"] == food["food_id"]);
+
+        List<Ingredient> ingredientsList = [];
+
+        for (var ingredient in resIngredientsList) {
+          ingredientsList.add(
+            Ingredient(
+              name: ingredient["ingredients"]["name"],
+              alergic: ingredient["ingredients"]["alergic"],
+              iconAsset: ingredient["ingredients"]["icon_asset"],
+            ),
+          );
+        }
+
         foodList.add(
           Food(
             id: food["food_id"],
@@ -57,7 +76,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
             category: widget.categoriesList.firstWhere(
               (element) => element.id == food["category_id"],
             ),
-            ingredients: [ingredients[0]],
+            ingredients: ingredientsList,
             price: food["price"].toDouble(),
             imgAsset: food["img_asset"],
             restaurantId: food["restaurant_id"],
@@ -298,6 +317,7 @@ class _RestaurantViewScreenState extends State<RestaurantViewScreen> {
                         )
                       : FoodWidget(
                           food: foodList[index],
+                          restaurant: widget.restaurant,
                           cartBadgeUpdateCallback:
                               widget.cartBadgeUpdateCallback,
                         );

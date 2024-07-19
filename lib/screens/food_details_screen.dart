@@ -8,10 +8,15 @@ import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/widgets/widgets.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
-  const FoodDetailsScreen(
-      {super.key, required this.food, required this.cartBadgeUpdateCallback});
+  const FoodDetailsScreen({
+    super.key,
+    required this.food,
+    required this.cartBadgeUpdateCallback,
+    required this.restaurant,
+  });
 
   final Food food;
+  final Restaurant restaurant;
   final Function cartBadgeUpdateCallback;
 
   @override
@@ -86,7 +91,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      widget.food.restaurantId.toString(),
+                      widget.restaurant.name.toString(),
                       style: TextStyle(
                         fontSize: 14.sp,
                       ),
@@ -126,11 +131,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            true
-                                ? "rating"
-                                : Restaurants
-                                    .list[widget.food.restaurantId].rating
-                                    .toString(),
+                            widget.restaurant.rating.toString(),
                             style: TextStyle(
                                 fontSize: 16.sp, fontWeight: FontWeight.bold),
                           )
@@ -147,15 +148,9 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            true
-                                ? "price"
-                                : Restaurants.list[widget.food.restaurantId]
-                                            .deliveryPrice ==
-                                        0.0
-                                    ? "Free"
-                                    : Restaurants.list[widget.food.restaurantId]
-                                        .deliveryPrice
-                                        .toString(),
+                            widget.restaurant.deliveryPrice == 0.0
+                                ? "Free"
+                                : widget.restaurant.deliveryPrice.toString(),
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -171,9 +166,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                           SizedBox(width: 4.sp),
                           Text(
-                            true
-                                ? "time"
-                                : "${Restaurants.list[widget.food.restaurantId].deliveryTime} min",
+                            "${widget.restaurant.deliveryTime} min",
                             style: TextStyle(fontSize: 14.sp),
                           )
                         ],
@@ -363,10 +356,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               GestureDetector(
                 onTap: () {
                   cart.addItem(
-                    CartItem(
-                        food: Restaurants.list[widget.food.restaurantId]
-                            .foodList[widget.food.id],
-                        count: foodCount),
+                    CartItem(food: widget.food, count: foodCount),
                   );
                   widget.cartBadgeUpdateCallback();
                   Navigator.pop(context);

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_gd/models/cart.dart';
 import 'package:food_delivery_gd/models/colors.dart';
 import 'package:food_delivery_gd/models/food.dart';
+import 'package:food_delivery_gd/models/restaurants.dart';
 import 'package:food_delivery_gd/screens/food_details_screen.dart';
 
 class FoodWidget extends StatelessWidget {
@@ -10,9 +11,11 @@ class FoodWidget extends StatelessWidget {
     super.key,
     required this.food,
     required this.cartBadgeUpdateCallback,
+    required this.restaurant,
   });
 
   final Food food;
+  final Restaurant restaurant;
   final Function cartBadgeUpdateCallback;
 
   @override
@@ -24,6 +27,7 @@ class FoodWidget extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => FoodDetailsScreen(
                     food: food,
+                    restaurant: restaurant,
                     cartBadgeUpdateCallback: cartBadgeUpdateCallback)));
       },
       child: Stack(
